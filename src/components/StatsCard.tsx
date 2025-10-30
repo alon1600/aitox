@@ -13,7 +13,7 @@ interface StatsCardProps {
 
 export function StatsCard({ stats }: StatsCardProps) {
   return (
-    <div className="mt-6 w-full rounded-3xl glass p-6 shadow-[0_10px_40px_rgba(0,0,0,0.25)] ring-1 ring-white/10">
+    <div className="mt-6 w-full rounded-3xl lg:rounded-2xl glass p-6 lg:p-7 shadow-[0_8px_30px_rgba(0,0,0,0.20)] ring-1 ring-white/15">
       <div className="grid grid-cols-3 gap-4 sm:gap-8">
         {stats.map((s) => (
           <div key={s.label} className="text-center">

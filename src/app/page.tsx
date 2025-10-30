@@ -18,7 +18,7 @@ export default function Home() {
             <span className="ml-1 font-semibold text-slate-100">12,000+ peer‑reviewed studies</span>.
           </p>
 
-          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mt-6 lg:mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:max-w-xl">
             <a href="#search" className="rounded-2xl bg-white text-slate-900 py-3 font-semibold shadow ring-1 ring-white/10 hover:bg-slate-100">
               Start a free search
             </a>
@@ -64,7 +64,7 @@ export default function Home() {
             </section>
           </div>
 
-          <div className="lg:col-span-5 lg:sticky lg:top-10">
+          <div className="lg:col-span-5 lg:sticky lg:top-16">
             <StatsCard
           stats={[
             { value: "500K+", label: "Products\nAnalyzed" },

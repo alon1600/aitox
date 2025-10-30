@@ -8,6 +8,6 @@
 
 /* Optional utility for glass surfaces */
 .glass {
-  background-color: rgb(255 255 255 / 0.06);
-  backdrop-filter: blur(12px);
+  background-color: rgb(255 255 255 / 0.10);
+  backdrop-filter: blur(14px);
 }

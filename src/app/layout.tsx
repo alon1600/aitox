@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased bg-gradient-to-b from-indigo-900 via-violet-900 to-cyan-900 text-slate-50`}>
+      <body className={`${inter.variable} antialiased bg-gradient-to-b from-indigo-800 via-violet-800 to-cyan-800 text-slate-50`}>
         <div className="relative mx-auto min-h-[100svh] w-full max-w-7xl lg:px-6 pb-24">
           {/* decorative gradient blobs for brand identity */}
           <div aria-hidden className="pointer-events-none absolute -top-20 -left-24 h-64 w-64 rounded-full bg-gradient-to-br from-fuchsia-400/40 via-indigo-400/35 to-cyan-300/35 blur-3xl" />
