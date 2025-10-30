@@ -5,15 +5,15 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="mx-auto flex min-h-[100svh] w-full max-w-md flex-col">
-      <main className="flex flex-1 flex-col px-6 pb-28 pt-10">
-        <header className="text-center">
+    <div className="mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col">
+      <main className="flex flex-1 flex-col px-6 lg:px-8 pb-28 pt-10 lg:pt-14">
+        <header className="text-center lg:text-left">
           <h1 className="text-4xl font-extrabold tracking-tight">
             <span className="bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-pink-300 bg-clip-text text-transparent">
               Make safer choices in seconds
             </span>
           </h1>
-          <p className="mt-3 text-lg leading-7 text-slate-300">
+          <p className="mt-3 text-lg leading-7 text-slate-300 max-w-2xl lg:max-w-3xl">
             Instantly vet any product for hundreds of chemicals using research from
             <span className="ml-1 font-semibold text-slate-100">12,000+ peer‑reviewed studies</span>.
           </p>
@@ -32,49 +32,48 @@ export default function Home() {
           </p>
         </header>
 
-        <StatsCard
+        <div className="mt-6 lg:mt-10 grid grid-cols-1 lg:grid-cols-2 lg:items-start lg:gap-10">
+          <div>
+            <div id="search">
+              <SearchBar />
+            </div>
+            <section className="mt-5">
+              <h3 className="text-center lg:text-left text-sm font-semibold text-slate-400">
+                Try searching:
+              </h3>
+              <div className="mt-3 flex flex-wrap lg:justify-start justify-center gap-3">
+                {["Teflon pans","Baby bottles","Shampoo","Rugs","Hand soap"].map((label) => (
+                  <Chip key={label} label={label} />
+                ))}
+              </div>
+            </section>
+
+            <section className="mt-6">
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-white/10" />
+                <span className="text-sm text-slate-400">Or</span>
+                <div className="h-px flex-1 bg-white/10" />
+              </div>
+              <Link
+                href="/upload"
+                className="mt-4 flex w-full items-center justify-center gap-3 rounded-2xl bg-white/10 py-4 text-base font-semibold text-slate-100 ring-1 ring-white/10 hover:bg-white/15"
+              >
+                <span className="text-xl">📷</span>
+                Scan your home (beta)
+              </Link>
+            </section>
+          </div>
+
+          <div>
+            <StatsCard
           stats={[
             { value: "500K+", label: "Products\nAnalyzed" },
             { value: "12K+", label: "Scientific\nStudies" },
             { value: "100%", label: "Expert\nVetted" },
           ].map((s) => ({ value: s.value, label: s.label.replace("\\n", " ") }))}
         />
-
-        <div id="search">
-          <SearchBar />
+          </div>
         </div>
-
-        <section className="mt-5">
-          <h3 className="text-center text-sm font-semibold text-slate-400">
-            Try searching:
-          </h3>
-          <div className="mt-3 flex flex-wrap justify-center gap-3">
-            {[
-              "Teflon pans",
-              "Baby bottles",
-              "Shampoo",
-              "Rugs",
-              "Hand soap",
-            ].map((label) => (
-              <Chip key={label} label={label} />
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-6">
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-white/10" />
-            <span className="text-sm text-slate-400">Or</span>
-            <div className="h-px flex-1 bg-white/10" />
-          </div>
-          <Link
-            href="/upload"
-            className="mt-4 flex w-full items-center justify-center gap-3 rounded-2xl bg-white/10 py-4 text-base font-semibold text-slate-100 ring-1 ring-white/10 hover:bg-white/15"
-          >
-            <span className="text-xl">📷</span>
-            Scan your home (beta)
-          </Link>
-        </section>
         <section className="mt-8">
           <h2 className="text-center text-lg font-bold text-white">Why families and professionals trust AI Toxicologist</h2>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -109,7 +108,7 @@ export default function Home() {
         </section>
 
         <section className="mt-8">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:max-w-xl">
             <Link href="/shop" className="rounded-2xl bg-white text-center text-slate-900 py-3 font-semibold shadow ring-1 ring-white/10 hover:bg-slate-100">Shop safer picks</Link>
             <Link href="/profile" className="rounded-2xl bg-white/10 text-center py-3 font-semibold text-slate-100 ring-1 ring-white/10 hover:bg-white/15">Join the waitlist</Link>
           </div>
