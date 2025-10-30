@@ -5,24 +5,24 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col">
-      <main className="flex flex-1 flex-col px-6 lg:px-12 pb-28 pt-8 lg:pt-16">
+    <div className="mx-auto flex min-h-[100svh] w-full max-w-[1920px] flex-col">
+      <main className="flex flex-1 flex-col px-6 lg:px-12 xl:px-16 2xl:px-24 pb-28 pt-8 lg:pt-16">
         {/* Desktop: Asymmetric concierge layout */}
-        <div className="lg:grid lg:grid-cols-12 lg:gap-16 lg:items-start">
+        <div className="lg:grid lg:grid-cols-12 lg:gap-12 xl:gap-16 2xl:gap-20 lg:items-start">
           {/* Left: Hero + Search (Concierge Zone) */}
-          <div className="lg:col-span-8 lg:max-w-3xl">
+          <div className="lg:col-span-8 xl:col-span-7 2xl:col-span-6 lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
             <header className="text-center lg:text-left mb-10 lg:mb-16">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 mb-6 lg:mb-8">
                 <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                <span className="text-xs font-medium text-slate-300 uppercase tracking-wider">Your Life Toxicologist</span>
+                <span className="text-xs font-medium text-slate-300 uppercase tracking-wider">Your Home Toxicologist</span>
               </div>
               
-              <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]">
+              <h1 className="text-5xl lg:text-7xl xl:text-7xl 2xl:text-8xl font-extrabold tracking-tight leading-[1.1]">
                 <span className="bg-gradient-to-r from-indigo-100 via-fuchsia-100 via-pink-100 to-cyan-100 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(139,92,246,0.4)]">
                   Make safer choices in seconds
                 </span>
               </h1>
-              <p className="mt-6 lg:mt-8 text-xl lg:text-2xl leading-relaxed text-slate-300 font-light max-w-2xl">
+              <p className="mt-6 lg:mt-8 text-xl lg:text-2xl xl:text-2xl 2xl:text-3xl leading-relaxed text-slate-300 font-light max-w-2xl xl:max-w-3xl 2xl:max-w-4xl">
                 Instantly vet any product for hundreds of chemicals using research from
                 <span className="ml-1.5 font-semibold text-white bg-white/5 px-2 py-0.5 rounded">12,000+ peer-reviewed studies</span>.
               </p>
@@ -68,7 +68,7 @@ export default function Home() {
           </div>
 
           {/* Right: Stats & Trust Signals (Sidebar) */}
-          <div className="lg:col-span-4 lg:sticky lg:top-8 lg:self-start">
+          <div className="lg:col-span-4 xl:col-span-5 2xl:col-span-6 lg:sticky lg:top-8 lg:self-start">
             <div className="space-y-6">
               <StatsCard
                 stats={[
