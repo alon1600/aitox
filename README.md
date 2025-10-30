@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+AI Toxicologist — iOS‑native web app (Next.js + Tailwind)
 
-## Getting Started
+### Getting Started
 
-First, run the development server:
-
+1) Install dependencies (already installed if created via script):
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2) Run the dev server:
+```bash
+npm run dev
+```
+Then open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `src/app` — App Router pages and layout
+- `src/components` — Reusable UI (StatsCard, SearchBar, Chip, BottomNav)
 
-## Learn More
+### Design Notes
 
-To learn more about Next.js, take a look at the following resources:
+- Mobile-first layout sized to `max-w-md` to feel like iOS
+- Soft shadows, rounded corners, and gradients for a native look
+- Sticky bottom navigation across routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Vercel (recommended)
 
-## Deploy on Vercel
+1. Push this folder to GitHub (public or private).
+2. Go to Vercel → New Project → Import the repo.
+3. Framework auto-detects as Next.js; accept defaults and Deploy.
+   - Build Command: `next build`
+   - Install Command: `npm install`
+   - Output: auto (no change needed)
+4. Vercel gives you a preview URL per commit and a production URL after you Promote.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Vercel CLI (one-command preview)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm i -g vercel
+vercel --yes --prod
+```
+
+Notes
+- No environment variables are required for this project.
+- Custom domains can be added in Vercel → Project Settings → Domains.
