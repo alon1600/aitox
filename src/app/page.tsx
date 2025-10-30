@@ -10,14 +10,14 @@ export default function Home() {
         {/* Desktop: Asymmetric concierge layout */}
         <div className="lg:grid lg:grid-cols-12 lg:gap-12 xl:gap-16 2xl:gap-20 lg:items-start">
           {/* Left: Hero + Search (Concierge Zone) */}
-          <div className="lg:col-span-8 xl:col-span-7 2xl:col-span-6 lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
+          <div className="lg:col-span-8 xl:col-span-7 2xl:col-span-6 lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl overflow-visible">
             <header className="text-center lg:text-left mb-10 lg:mb-16">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 mb-6 lg:mb-8">
                 <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></div>
                 <span className="text-xs font-medium text-slate-300 uppercase tracking-wider">Your Home Toxicologist</span>
               </div>
               
-              <h1 className="text-5xl lg:text-7xl xl:text-7xl 2xl:text-8xl font-extrabold tracking-tight leading-[1.1]">
+              <h1 className="text-5xl lg:text-7xl xl:text-7xl 2xl:text-8xl font-extrabold tracking-tight leading-[1.1] break-words whitespace-normal">
                 <span className="bg-gradient-to-r from-indigo-100 via-fuchsia-100 via-pink-100 to-cyan-100 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(139,92,246,0.4)]">
                   Make safer choices in seconds
                 </span>
