@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir, readFile } from 'fs/promises';
-import { existsSync } from 'fs';
+import { writeFile, mkdir, readFile, access } from 'fs/promises';
+import { constants } from 'fs';
 import path from 'path';
 
 const WAITLIST_FILE = path.join(process.cwd(), 'data', 'waitlist.json');
@@ -12,27 +12,42 @@ interface WaitlistEntry {
 
 async function ensureDataDirectory() {
   const dataDir = path.join(process.cwd(), 'data');
-  if (!existsSync(dataDir)) {
-    await mkdir(dataDir, { recursive: true });
+  try {
+    await access(dataDir, constants.F_OK);
+  } catch {
+    // Directory doesn't exist, create it
+    try {
+      await mkdir(dataDir, { recursive: true, mode: 0o755 });
+    } catch (error) {
+      console.error('Error creating data directory:', error);
+      throw new Error('Failed to create data directory');
+    }
   }
 }
 
 async function readWaitlist(): Promise<WaitlistEntry[]> {
   try {
-    if (!existsSync(WAITLIST_FILE)) {
-      return [];
-    }
+    await access(WAITLIST_FILE, constants.F_OK);
     const fileContent = await readFile(WAITLIST_FILE, 'utf-8');
     return JSON.parse(fileContent);
   } catch (error) {
+    // File doesn't exist or can't be read, return empty array
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return [];
+    }
     console.error('Error reading waitlist:', error);
     return [];
   }
 }
 
 async function writeWaitlist(entries: WaitlistEntry[]): Promise<void> {
-  await ensureDataDirectory();
-  await writeFile(WAITLIST_FILE, JSON.stringify(entries, null, 2), 'utf-8');
+  try {
+    await ensureDataDirectory();
+    await writeFile(WAITLIST_FILE, JSON.stringify(entries, null, 2), 'utf-8');
+  } catch (error) {
+    console.error('Error writing waitlist:', error);
+    throw new Error('Failed to save waitlist entry');
+  }
 }
 
 function validateEmail(email: string): boolean {
@@ -81,7 +96,20 @@ export async function POST(request: NextRequest) {
     entries.push(newEntry);
 
     // Save to file
-    await writeWaitlist(entries);
+    try {
+      await writeWaitlist(entries);
+    } catch (writeError) {
+      console.error('Failed to write waitlist:', writeError);
+      return NextResponse.json(
+        { 
+          error: 'Failed to save your email. Please try again later.',
+          details: process.env.NODE_ENV === 'development' 
+            ? (writeError instanceof Error ? writeError.message : 'Unknown error')
+            : undefined
+        },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
       { 
@@ -92,8 +120,14 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('Waitlist API error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Failed to process waitlist signup';
     return NextResponse.json(
-      { error: 'Failed to process waitlist signup' },
+      { 
+        error: errorMessage,
+        details: process.env.NODE_ENV === 'development' 
+          ? String(error)
+          : undefined
+      },
       { status: 500 }
     );
   }
