@@ -84,9 +84,9 @@ export default function Home() {
                   <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400/20 to-cyan-400/20 flex items-center justify-center ring-1 ring-emerald-400/30">
                     <span className="text-2xl">✓</span>
                   </div>
-                  <div>
-                    <div className="text-sm font-semibold text-white mb-1">Rigorously verified</div>
-                    <p className="text-xs leading-relaxed text-slate-300">Every analysis is backed by peer-reviewed research and expert validation.</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-white mb-1 break-words">Rigorously verified</div>
+                    <p className="text-xs leading-relaxed text-slate-300 break-words">Every analysis is backed by peer-reviewed research and expert validation.</p>
                   </div>
                 </div>
               </div>
