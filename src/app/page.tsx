@@ -34,13 +34,29 @@ export default function Home() {
                 </p>
               </header>
 
-              {/* Search Section */}
-              <div id="search" className="mb-8 sm:mb-10 lg:mb-12">
+              {/* Scan Your Home Section */}
+              <section className="mb-8 sm:mb-10 lg:mb-12">
                 <div className="mb-4 lg:mb-6">
-                  <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-2">Ask anything</h2>
-                  <p className="text-base text-slate-300">What product would you like to analyze?</p>
+                  <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-2">Scan your home</h2>
+                  <p className="text-base text-slate-300">Upload photos or videos to identify products and get recommendations</p>
                 </div>
-                <SearchBar />
+                <Link
+                  href="/upload"
+                  className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-white/5 backdrop-blur-xl py-4 sm:py-5 text-base font-semibold text-slate-200 shadow-lg shadow-black/20 ring-1 ring-white/15 hover:bg-white/10 hover:ring-white/25 hover:shadow-xl hover:shadow-black/25 transition-all duration-300 border border-white/5"
+                >
+                  <span className="text-xl">📷</span>
+                  <span>Start scanning</span>
+                  <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Beta</span>
+                </Link>
+              </section>
+
+              {/* Divider */}
+              <div className="mb-8 sm:mb-10 lg:mb-12">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-white/15" />
+                  <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Or</span>
+                  <div className="h-px flex-1 bg-gradient-to-l from-transparent via-white/15 to-white/15" />
+                </div>
               </div>
 
               {/* Popular Queries */}
@@ -55,22 +71,14 @@ export default function Home() {
                 </div>
               </section>
 
-              {/* Alternative Action */}
-              <section className="mb-8 lg:mb-0">
-                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-white/15" />
-                  <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Or</span>
-                  <div className="h-px flex-1 bg-gradient-to-l from-transparent via-white/15 to-white/15" />
+              {/* Search Section */}
+              <div id="search" className="mb-8 sm:mb-10 lg:mb-12">
+                <div className="mb-4 lg:mb-6">
+                  <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-2">Ask anything</h2>
+                  <p className="text-base text-slate-300">What product would you like to analyze?</p>
                 </div>
-                <Link
-                  href="/upload"
-                  className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-white/5 backdrop-blur-xl py-4 sm:py-5 text-base font-semibold text-slate-200 shadow-lg shadow-black/20 ring-1 ring-white/15 hover:bg-white/10 hover:ring-white/25 hover:shadow-xl hover:shadow-black/25 transition-all duration-300 border border-white/5"
-                >
-                  <span className="text-xl">📷</span>
-                  <span>Scan your home</span>
-                  <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Beta</span>
-                </Link>
-              </section>
+                <SearchBar />
+              </div>
             </div>
           </div>
 
