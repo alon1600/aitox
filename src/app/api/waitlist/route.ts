@@ -13,14 +13,17 @@ interface WaitlistEntry {
 async function ensureDataDirectory() {
   const dataDir = path.join(process.cwd(), 'data');
   try {
-    await access(dataDir, constants.F_OK);
-  } catch {
-    // Directory doesn't exist, create it
+    await access(dataDir, constants.F_OK | constants.W_OK);
+  } catch (error) {
+    // Directory doesn't exist or not writable, create it
     try {
       await mkdir(dataDir, { recursive: true, mode: 0o755 });
-    } catch (error) {
-      console.error('Error creating data directory:', error);
-      throw new Error('Failed to create data directory');
+      // Verify we can write to it
+      await access(dataDir, constants.W_OK);
+    } catch (mkdirError) {
+      console.error('Error creating/accessing data directory:', mkdirError);
+      // Don't throw - we'll handle gracefully by returning an error response
+      throw new Error('Data directory not accessible');
     }
   }
 }
@@ -100,9 +103,14 @@ export async function POST(request: NextRequest) {
       await writeWaitlist(entries);
     } catch (writeError) {
       console.error('Failed to write waitlist:', writeError);
+      // If it's a permission error, provide more specific message
+      const errorMessage = writeError instanceof Error && writeError.message.includes('Permission')
+        ? 'File system permission error. Please contact support.'
+        : 'Failed to save your email. Please try again later.';
+      
       return NextResponse.json(
         { 
-          error: 'Failed to save your email. Please try again later.',
+          error: errorMessage,
           details: process.env.NODE_ENV === 'development' 
             ? (writeError instanceof Error ? writeError.message : 'Unknown error')
             : undefined

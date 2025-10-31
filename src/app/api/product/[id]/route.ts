@@ -4,11 +4,126 @@ import { NextRequest, NextResponse } from 'next/server';
 const PRODUCT_EVALUATIONS: Record<string, any> = {
   '1': {
     id: '1',
-    name: 'Non-stick Pan (Teflon)',
+    name: 'Pots and Pans',
     category: 'Cookware',
-    overallScore: 78, // Higher score = higher risk
+    overallScore: 78, // Higher score = higher risk (average across all types)
     riskLevel: 'high',
-    summary: 'This non-stick cookware contains perfluorinated compounds (PFOA/PTFE) that can release toxic fumes when overheated and have been linked to multiple health concerns.',
+    summary: 'Cookware encompasses various materials and coatings, each with different safety profiles. Non-stick coatings containing perfluorinated compounds (PFOA/PTFE) present significant health concerns, while materials like stainless steel and ceramic offer safer alternatives.',
+    // Effectiveness criteria specific to cookware
+    effectivenessCriteria: {
+      heatDistribution: { score: 65, label: 'Heat Distribution', description: 'Moderate heat conductivity, but can have hot spots' },
+      nonStickPerformance: { score: 95, label: 'Non-Stick Performance', description: 'Excellent non-stick properties when properly maintained' },
+      durability: { score: 45, label: 'Durability', description: 'Coating can scratch and degrade over time' },
+      easeOfCleaning: { score: 90, label: 'Ease of Cleaning', description: 'Very easy to clean with proper care' },
+      temperatureResistance: { score: 60, label: 'Temperature Resistance', description: 'Degrades above 260°C (500°F), releases fumes' }
+    },
+    // Product rankings comparing top alternatives
+    productRankings: [
+      {
+        id: 'r1',
+        name: 'Ceramic-Coated Non-Stick Skillet',
+        category: 'Cookware',
+        effectivenessScore: 78,
+        toxicologyScore: 22, // Lower is better
+        overallRank: 1,
+        buyLinks: {
+          amazon: 'https://amazon.com/dp/B08XYZ1234',
+          target: 'https://target.com/p/ceramic-skillet',
+          walmart: 'https://walmart.com/ip/ceramic-pan'
+        },
+        effectivenessBreakdown: {
+          heatDistribution: 70,
+          nonStickPerformance: 85,
+          durability: 65,
+          easeOfCleaning: 85,
+          temperatureResistance: 85
+        },
+        toxicologyBreakdown: {
+          carcinogenicity: 18,
+          endocrineDisruption: 20,
+          reproductiveToxicity: 22,
+          neurotoxicity: 15
+        }
+      },
+      {
+        id: 'r2',
+        name: 'Stainless Steel Cookware Set',
+        category: 'Cookware',
+        effectivenessScore: 72,
+        toxicologyScore: 15, // Lower is better
+        overallRank: 2,
+        buyLinks: {
+          amazon: 'https://amazon.com/dp/B08ABC5678',
+          target: 'https://target.com/p/stainless-cookware',
+          walmart: 'https://walmart.com/ip/stainless-steel-set'
+        },
+        effectivenessBreakdown: {
+          heatDistribution: 90,
+          nonStickPerformance: 40,
+          durability: 95,
+          easeOfCleaning: 60,
+          temperatureResistance: 95
+        },
+        toxicologyBreakdown: {
+          carcinogenicity: 12,
+          endocrineDisruption: 15,
+          reproductiveToxicity: 18,
+          neurotoxicity: 10
+        }
+      },
+      {
+        id: 'current',
+        name: 'Non-stick Pan (Teflon)',
+        category: 'Cookware',
+        effectivenessScore: 71,
+        toxicologyScore: 78, // Lower is better
+        overallRank: 5,
+        buyLinks: {
+          amazon: 'https://amazon.com/dp/B08DEF9012',
+          target: 'https://target.com/p/teflon-pan',
+          walmart: 'https://walmart.com/ip/nonstick-pan'
+        },
+        effectivenessBreakdown: {
+          heatDistribution: 65,
+          nonStickPerformance: 95,
+          durability: 45,
+          easeOfCleaning: 90,
+          temperatureResistance: 60
+        },
+        toxicologyBreakdown: {
+          carcinogenicity: 85,
+          endocrineDisruption: 72,
+          reproductiveToxicity: 68,
+          neurotoxicity: 45
+        }
+      },
+      {
+        id: 'r5',
+        name: 'Cast Iron Cookware',
+        category: 'Cookware',
+        effectivenessScore: 75,
+        toxicologyScore: 20, // Lower is better
+        overallRank: 4,
+        buyLinks: {
+          amazon: 'https://amazon.com/dp/B08CAST001',
+          target: 'https://target.com/p/cast-iron',
+          walmart: 'https://walmart.com/ip/cast-iron-pan'
+        },
+        effectivenessBreakdown: {
+          heatDistribution: 95,
+          nonStickPerformance: 60,
+          durability: 98,
+          easeOfCleaning: 55,
+          temperatureResistance: 95
+        },
+        toxicologyBreakdown: {
+          carcinogenicity: 18,
+          endocrineDisruption: 15,
+          reproductiveToxicity: 20,
+          neurotoxicity: 12
+        }
+      }
+    ],
     dimensions: [
       {
         dimension: 'Carcinogenicity',
@@ -189,11 +304,100 @@ const PRODUCT_EVALUATIONS: Record<string, any> = {
   },
   '2': {
     id: '2',
-    name: 'Plastic Baby Bottle',
+    name: 'Baby Bottles',
     category: 'Baby Products',
-    overallScore: 82,
+    overallScore: 82, // Average across all types
     riskLevel: 'very-high',
-    summary: 'Many plastic baby bottles contain BPA, phthalates, and other endocrine-disrupting chemicals that can leach into milk, especially when heated.',
+    summary: 'Baby bottles come in various materials, with significant safety differences. Plastic bottles containing BPA, phthalates, and other endocrine-disrupting chemicals pose serious health risks, especially when heated, while glass and silicone alternatives offer much safer options.',
+    // Effectiveness criteria specific to baby products
+    effectivenessCriteria: {
+      easeOfUse: { score: 85, label: 'Ease of Use', description: 'Lightweight and easy for parents to hold' },
+      durability: { score: 70, label: 'Durability', description: 'Can crack or scratch, may need frequent replacement' },
+      temperatureResistance: { score: 50, label: 'Temperature Resistance', description: 'Limited - can degrade when heated, leaching chemicals' },
+      portability: { score: 95, label: 'Portability', description: 'Very lightweight and portable' },
+      easeOfCleaning: { score: 80, label: 'Ease of Cleaning', description: 'Generally easy to clean but can retain odors' }
+    },
+    // Product rankings comparing top alternatives
+    productRankings: [
+      {
+        id: 'r3',
+        name: 'Borosilicate Glass Baby Bottle',
+        category: 'Baby Products',
+        effectivenessScore: 68,
+        toxicologyScore: 8, // Lower is better
+        overallRank: 1,
+        buyLinks: {
+          amazon: 'https://amazon.com/dp/B08GLASS001',
+          target: 'https://target.com/p/glass-baby-bottle',
+          walmart: 'https://walmart.com/ip/glass-bottle'
+        },
+        effectivenessBreakdown: {
+          easeOfUse: 50,
+          durability: 85,
+          temperatureResistance: 95,
+          portability: 60,
+          easeOfCleaning: 90
+        },
+        toxicologyBreakdown: {
+          endocrineDisruption: 5,
+          reproductiveToxicity: 10,
+          neurotoxicity: 8,
+          carcinogenicity: 5
+        }
+      },
+      {
+        id: 'r4',
+        name: 'Silicone Baby Bottle',
+        category: 'Baby Products',
+        effectivenessScore: 82,
+        toxicologyScore: 25, // Lower is better
+        overallRank: 2,
+        buyLinks: {
+          amazon: 'https://amazon.com/dp/B08SILIC001',
+          target: 'https://target.com/p/silicone-bottle',
+          walmart: 'https://walmart.com/ip/silicone-baby-bottle'
+        },
+        effectivenessBreakdown: {
+          easeOfUse: 90,
+          durability: 85,
+          temperatureResistance: 90,
+          portability: 85,
+          easeOfCleaning: 90
+        },
+        toxicologyBreakdown: {
+          endocrineDisruption: 20,
+          reproductiveToxicity: 25,
+          neurotoxicity: 22,
+          carcinogenicity: 18
+        }
+      },
+      {
+        id: 'current',
+        name: 'Plastic Baby Bottle',
+        category: 'Baby Products',
+        effectivenessScore: 76,
+        toxicologyScore: 82, // Lower is better
+        overallRank: 3,
+        buyLinks: {
+          amazon: 'https://amazon.com/dp/B08PLASTIC1',
+          target: 'https://target.com/p/plastic-bottle',
+          walmart: 'https://walmart.com/ip/plastic-baby-bottle'
+        },
+        effectivenessBreakdown: {
+          easeOfUse: 85,
+          durability: 70,
+          temperatureResistance: 50,
+          portability: 95,
+          easeOfCleaning: 80
+        },
+        toxicologyBreakdown: {
+          endocrineDisruption: 88,
+          reproductiveToxicity: 75,
+          neurotoxicity: 60,
+          carcinogenicity: 70
+        }
+      }
+    ],
     dimensions: [
       {
         dimension: 'Endocrine Disruption',

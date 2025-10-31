@@ -49,7 +49,7 @@ export default function Home() {
                   Popular queries
                 </h3>
                 <div className="flex flex-wrap gap-2 sm:gap-3">
-                  {["Teflon pans","Baby bottles","Shampoo","Rugs","Hand soap"].map((label) => (
+                  {["Non-Toxic Pots & Pans","Best Shampoo for my hair","Rugs best for my air quality","Non-toxic hand soap"].map((label) => (
                     <Chip key={label} label={label} />
                   ))}
                 </div>

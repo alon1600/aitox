@@ -31,17 +31,17 @@ const PRODUCT_METADATA: Record<string, {
 }> = {
   '1': {
     id: '1',
-    name: 'Non-stick Pan (Teflon)',
+    name: 'Pots and Pans',
     category: 'Cookware',
-    keywords: ['teflon', 'pan', 'non-stick', 'nonstick', 'pfoa', 'ptfe', 'cookware', 'skillet', 'frying pan'],
+    keywords: ['pots', 'pans', 'cookware', 'teflon', 'pan', 'non-stick', 'nonstick', 'pfoa', 'ptfe', 'skillet', 'frying pan', 'cookware set', 'pots and pans'],
     riskLevel: 'high',
     overallScore: 78,
   },
   '2': {
     id: '2',
-    name: 'Plastic Baby Bottle',
+    name: 'Baby Bottles',
     category: 'Baby Products',
-    keywords: ['baby', 'bottle', 'plastic', 'bpa', 'baby bottle', 'infant bottle'],
+    keywords: ['baby', 'bottle', 'baby bottles', 'plastic', 'bpa', 'baby bottle', 'infant bottle', 'feeding bottle'],
     riskLevel: 'very-high',
     overallScore: 82,
   },
