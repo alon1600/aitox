@@ -12,6 +12,18 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "AI Toxicologist",
   description: "Vet every product for toxins using the latest research.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover" as const,
 };
 
 export default function RootLayout({
