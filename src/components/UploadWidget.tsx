@@ -13,15 +13,33 @@ interface UploadWidgetProps {
 
 export function UploadWidget({ onFilesSelected }: UploadWidgetProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const cameraRef = useRef<HTMLInputElement | null>(null);
   const [previews, setPreviews] = useState<PreviewItem[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
 
   function handleSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files ?? []);
-    if (files.length === 0) return;
+    const newFiles = Array.from(e.target.files ?? []);
+    if (newFiles.length === 0) return;
+    
+    const updatedFiles = [...files, ...newFiles];
+    setFiles(updatedFiles);
+    
     setPreviews(
-      files.map((f) => ({ url: URL.createObjectURL(f), type: f.type }))
+      updatedFiles.map((f) => ({ url: URL.createObjectURL(f), type: f.type }))
     );
-    onFilesSelected?.(files);
+    onFilesSelected?.(updatedFiles);
+  }
+
+  function removeFile(index: number) {
+    const updatedFiles = files.filter((_, i) => i !== index);
+    const updatedPreviews = previews.filter((_, i) => i !== index);
+    
+    // Clean up object URLs
+    URL.revokeObjectURL(previews[index].url);
+    
+    setFiles(updatedFiles);
+    setPreviews(updatedPreviews);
+    onFilesSelected?.(updatedFiles);
   }
 
   return (
@@ -33,20 +51,12 @@ export function UploadWidget({ onFilesSelected }: UploadWidgetProps) {
         >
           Choose photos/videos
         </button>
-        <label className="flex-1">
-          <span className="sr-only">Capture using camera</span>
-          <input
-            className="hidden"
-            type="file"
-            accept="image/*,video/*"
-            capture="environment"
-            multiple
-            onChange={handleSelect}
-          />
-          <div className="cursor-pointer rounded-2xl bg-white/10 px-4 py-3 text-center font-semibold ring-1 ring-white/10 hover:bg-white/15">
-            Use camera
-          </div>
-        </label>
+        <button
+          onClick={() => cameraRef.current?.click()}
+          className="flex-1 rounded-2xl bg-white/10 px-4 py-3 font-semibold ring-1 ring-white/10 hover:bg-white/15"
+        >
+          Use camera
+        </button>
       </div>
       <input
         ref={inputRef}
@@ -56,18 +66,52 @@ export function UploadWidget({ onFilesSelected }: UploadWidgetProps) {
         className="hidden"
         onChange={handleSelect}
       />
+      
+      <input
+        ref={cameraRef}
+        type="file"
+        accept="image/*,video/*"
+        capture="environment"
+        multiple
+        className="hidden"
+        onChange={handleSelect}
+      />
 
       {previews.length > 0 && (
-        <div className="mt-4 grid grid-cols-3 gap-2">
-          {previews.slice(0, 9).map((p, i) => (
-            <div key={i} className="overflow-hidden rounded-xl ring-1 ring-white/10">
-              {p.type.startsWith("video/") ? (
-                <video src={p.url} className="h-24 w-full object-cover" muted />
-              ) : (
-                <img src={p.url} className="h-24 w-full object-cover" alt="preview" />
-              )}
-            </div>
-          ))}
+        <div className="mt-4">
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-xs font-medium text-slate-400">
+              {previews.length} {previews.length === 1 ? "file" : "files"} selected
+            </p>
+            <button
+              onClick={() => {
+                setFiles([]);
+                previews.forEach(p => URL.revokeObjectURL(p.url));
+                setPreviews([]);
+                onFilesSelected?.([]);
+              }}
+              className="text-xs text-slate-400 hover:text-slate-300"
+            >
+              Clear all
+            </button>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {previews.map((p, i) => (
+              <div key={i} className="group relative overflow-hidden rounded-xl ring-1 ring-white/10">
+                {p.type.startsWith("video/") ? (
+                  <video src={p.url} className="h-24 w-full object-cover" muted />
+                ) : (
+                  <img src={p.url} className="h-24 w-full object-cover" alt="preview" />
+                )}
+                <button
+                  onClick={() => removeFile(i)}
+                  className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <span className="text-white text-xl">×</span>
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
