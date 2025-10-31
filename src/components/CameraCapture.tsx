@@ -11,7 +11,11 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const recordedChunksRef = useRef<Blob[]>([]);
+  const mimeTypeRef = useRef<string>('video/webm');
   const [error, setError] = useState<string | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [facingMode, setFacingMode] = useState<"user" | "environment">("environment");
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -76,6 +80,11 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
   };
 
   const stopCamera = () => {
+    // Stop recording if active
+    if (recorderRef.current && recorderRef.current.state !== 'inactive') {
+      recorderRef.current.stop();
+    }
+    
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
@@ -83,43 +92,84 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
+    recorderRef.current = null;
+    recordedChunksRef.current = [];
   };
 
-  const capturePhoto = () => {
-    if (!videoRef.current || !canvasRef.current) return;
+  const startRecording = () => {
+    if (!streamRef.current || !videoRef.current) return;
 
-    setIsCapturing(true);
-    
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-
-    if (!context) {
-      setIsCapturing(false);
-      return;
-    }
-
-    // Set canvas dimensions to match video
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
-    // Draw video frame to canvas
-    context.drawImage(video, 0, 0);
-
-    // Convert canvas to blob
-    canvas.toBlob(
-      (blob) => {
-        if (blob) {
-          const file = new File([blob], `photo-${Date.now()}.jpg`, {
-            type: "image/jpeg",
-          });
-          onCapture(file);
+    try {
+      recordedChunksRef.current = [];
+      
+      // Try different mime types for browser compatibility
+      const mimeTypes = [
+        'video/webm;codecs=vp9',
+        'video/webm;codecs=vp8',
+        'video/webm',
+        'video/mp4',
+      ];
+      
+      mimeTypeRef.current = 'video/webm';
+      for (const mimeType of mimeTypes) {
+        if (MediaRecorder.isTypeSupported(mimeType)) {
+          mimeTypeRef.current = mimeType;
+          break;
         }
+      }
+      
+      const mediaRecorder = new MediaRecorder(streamRef.current, {
+        mimeType: mimeTypeRef.current,
+      });
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const fileExtension = mimeTypeRef.current.includes('mp4') ? 'mp4' : 'webm';
+        const blob = new Blob(recordedChunksRef.current, { type: mimeTypeRef.current.split(';')[0] });
+        const file = new File([blob], `video-${Date.now()}.${fileExtension}`, {
+          type: mimeTypeRef.current.split(';')[0],
+        });
         setIsCapturing(false);
-      },
-      "image/jpeg",
-      0.92
-    );
+        onCapture(file);
+      };
+
+      mediaRecorder.onerror = (event) => {
+        console.error('MediaRecorder error:', event);
+        setError('Failed to record video. Please try again.');
+        setIsRecording(false);
+        setIsCapturing(false);
+      };
+
+      recorderRef.current = mediaRecorder;
+      mediaRecorder.start();
+      setIsRecording(true);
+      setIsCapturing(true);
+    } catch (err) {
+      console.error('Error starting recording:', err);
+      setError('Video recording not supported on this device.');
+      setIsRecording(false);
+      setIsCapturing(false);
+    }
+  };
+
+  const stopRecording = () => {
+    if (recorderRef.current && recorderRef.current.state !== 'inactive') {
+      recorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
   };
 
   const switchCamera = () => {
@@ -140,7 +190,7 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
             <div className="text-center">
               <div className="text-5xl mb-4">📷</div>
               <p className="text-white text-lg mb-2">Camera Access Required</p>
-              <p className="text-slate-300 text-sm mb-4">{error || "Please allow camera access to take photos."}</p>
+              <p className="text-slate-300 text-sm mb-4">{error || "Please allow camera access to record videos."}</p>
               <button
                 onClick={startCamera}
                 className="rounded-xl bg-white px-6 py-2 font-semibold text-slate-900"
@@ -169,6 +219,14 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
 
             {/* Hidden canvas for capture */}
             <canvas ref={canvasRef} className="hidden" />
+            
+            {/* Recording indicator */}
+            {isRecording && (
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-red-500/90 px-4 py-2 z-10">
+                <div className="w-3 h-3 rounded-full bg-white animate-pulse"></div>
+                <span className="text-white text-sm font-semibold">Recording...</span>
+              </div>
+            )}
           </>
         )}
       </div>
@@ -187,14 +245,14 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
             </svg>
           </button>
 
-          {/* Capture button */}
+          {/* Record button */}
           <button
-            onClick={capturePhoto}
-            disabled={hasPermission !== true || isCapturing}
+            onClick={toggleRecording}
+            disabled={hasPermission !== true || (isCapturing && !isRecording)}
             className="rounded-full bg-white p-4 ring-4 ring-white/30 hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Take photo"
+            aria-label={isRecording ? "Stop recording" : "Start recording"}
           >
-            <div className="w-16 h-16 rounded-full bg-white"></div>
+            <div className={`w-16 h-16 rounded-full ${isRecording ? 'bg-red-500' : 'bg-white'}`}></div>
           </button>
 
           {/* Switch camera button (only show if multiple cameras available) */}
