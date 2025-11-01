@@ -23,7 +23,7 @@ export default function Home() {
                 {/* Headline */}
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-extrabold tracking-tight leading-[1.1] mb-4 sm:mb-6">
                   <span className="bg-gradient-to-r from-indigo-100 via-fuchsia-100 via-pink-100 to-cyan-100 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(139,92,246,0.4)] break-words">
-                    Make safer choices in seconds
+                    Evaluate every product for harmful toxins
                   </span>
                 </h1>
                 
@@ -65,7 +65,7 @@ export default function Home() {
                   Popular queries
                 </h3>
                 <div className="flex flex-wrap gap-2 sm:gap-3">
-                  {["Non-Toxic Pots & Pans","Best Shampoo for my hair","Rugs best for my air quality","Non-toxic hand soap"].map((label) => (
+                  {["Non-Toxic Pots & Pans", "Baby Bottles"].map((label) => (
                     <Chip key={label} label={label} />
                   ))}
                 </div>

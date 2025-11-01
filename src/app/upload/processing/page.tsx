@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 type DetectedProduct = {
   name: string;
   category: string;
-  riskLevel: "low" | "medium" | "high";
+  riskLevel: "low" | "medium" | "high" | "very-high";
   concerns: string[];
   saferAlternative: string;
 };
@@ -90,6 +90,8 @@ function ProcessingContent() {
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
+      case "very-high":
+        return "text-rose-400";
       case "high":
         return "text-red-400";
       case "medium":

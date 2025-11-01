@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // Simulated product database
 const PRODUCT_DATABASE = [
   {
+    id: '1',
     name: 'Non-stick pan',
     category: 'Cookware',
     riskLevel: 'high' as const,
@@ -11,14 +12,16 @@ const PRODUCT_DATABASE = [
     detectedKeywords: ['pan', 'skillet', 'frying pan', 'non-stick', 'teflon'],
   },
   {
+    id: '2',
     name: 'Plastic baby bottle',
     category: 'Baby products',
-    riskLevel: 'high' as const,
+    riskLevel: 'very-high' as const,
     concerns: ['BPA', 'Phthalates', 'Microplastics'],
     saferAlternative: 'Borosilicate glass bottle',
     detectedKeywords: ['bottle', 'baby bottle', 'plastic bottle'],
   },
   {
+    id: '3',
     name: 'Fragrance hand soap',
     category: 'Personal care',
     riskLevel: 'medium' as const,
@@ -27,6 +30,7 @@ const PRODUCT_DATABASE = [
     detectedKeywords: ['soap', 'hand soap', 'fragrance', 'hand wash'],
   },
   {
+    id: '4',
     name: 'Synthetic rug',
     category: 'Home furnishings',
     riskLevel: 'medium' as const,
@@ -35,6 +39,7 @@ const PRODUCT_DATABASE = [
     detectedKeywords: ['rug', 'carpet', 'mat'],
   },
   {
+    id: '5',
     name: 'Plastic food storage',
     category: 'Kitchenware',
     riskLevel: 'medium' as const,
@@ -94,11 +99,22 @@ export async function POST(request: NextRequest) {
     // 4. Query your product database
     // 5. Return structured results
 
+    const scanId = `scan_${Date.now()}`;
+    const timestamp = new Date().toISOString();
+
+    // Map detected products to include IDs and metadata for home catalog
+    const productsWithIds = detectedProducts.map((product, index) => ({
+      ...product,
+      id: product.id || `detected_${Date.now()}_${index}`,
+      addedAt: timestamp,
+      scanId,
+    }));
+
     return NextResponse.json({
       success: true,
-      detectedProducts,
-      scanId: `scan_${Date.now()}`,
-      timestamp: new Date().toISOString(),
+      detectedProducts: productsWithIds,
+      scanId,
+      timestamp,
     });
   } catch (error) {
     console.error('Scan error:', error);

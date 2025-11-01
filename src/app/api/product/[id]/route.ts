@@ -1,4 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+import {
+  ACADEMIC_STUDIES_CATALOGUE,
+  getStudiesByChemical,
+  getStudiesByProductCategory,
+  getStudiesByDimension,
+  AcademicStudy
+} from '@/data/academic-studies-catalogue';
 
 // Comprehensive product evaluation database
 const PRODUCT_EVALUATIONS: Record<string, any> = {
@@ -252,9 +259,41 @@ const PRODUCT_EVALUATIONS: Record<string, any> = {
     recommendations: [
       {
         id: 'r1',
+        preference: 'Lowest toxic risk',
+        preferenceDescription: 'If you prioritize toxic profile over all other factors',
         product: {
           id: 'alt1',
+          name: 'Stainless Steel Cookware Set',
+          specificProduct: 'All-Clad D3 Tri-Ply Stainless Steel Cookware',
+          category: 'Cookware',
+          score: 15,
+          improvement: 81,
+          keyBenefits: [
+            'No chemical coatings',
+            'Most comprehensive safety profile',
+            'No leaching concerns',
+            'Chemically inert material'
+          ],
+          verified: true,
+          priceRange: '$30-$150',
+          availability: 'Widely available',
+          imageUrl: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&h=600&fit=crop'
+        },
+        reason: 'Stainless steel is chemically inert and doesn\'t require coatings. Most comprehensive safety profile for cookware with zero toxicological concerns.',
+        dimensionComparison: [
+          { dimension: 'Carcinogenicity', currentScore: 85, recommendedScore: 12 },
+          { dimension: 'Endocrine Disruption', currentScore: 72, recommendedScore: 15 },
+          { dimension: 'Reproductive Toxicity', currentScore: 68, recommendedScore: 18 }
+        ]
+      },
+      {
+        id: 'r2',
+        preference: 'Best balance',
+        preferenceDescription: 'If you want non-stick convenience with minimal toxicity',
+        product: {
+          id: 'alt2',
           name: 'Ceramic-Coated Non-Stick Skillet',
+          specificProduct: 'GreenPan Valencia Pro Ceramic Non-Stick Cookware',
           category: 'Cookware',
           score: 22,
           improvement: 72,
@@ -266,9 +305,10 @@ const PRODUCT_EVALUATIONS: Record<string, any> = {
           ],
           verified: true,
           priceRange: '$25-$80',
-          availability: 'Widely available'
+          availability: 'Widely available',
+          imageUrl: 'https://images.unsplash.com/photo-1585241936939-be4099591252?w=800&h=600&fit=crop'
         },
-        reason: 'Ceramic coatings provide non-stick functionality without perfluorinated compounds. Made from natural materials like sand and minerals.',
+        reason: 'Ceramic coatings provide non-stick functionality without perfluorinated compounds. Made from natural materials like sand and minerals, offering a great balance of safety and performance.',
         dimensionComparison: [
           { dimension: 'Carcinogenicity', currentScore: 85, recommendedScore: 18 },
           { dimension: 'Endocrine Disruption', currentScore: 72, recommendedScore: 20 },
@@ -276,28 +316,32 @@ const PRODUCT_EVALUATIONS: Record<string, any> = {
         ]
       },
       {
-        id: 'r2',
+        id: 'r3',
+        preference: 'Maximum durability',
+        preferenceDescription: 'If you prioritize longevity over convenience',
         product: {
-          id: 'alt2',
-          name: 'Stainless Steel Cookware Set',
+          id: 'alt3',
+          name: 'Cast Iron Cookware',
+          specificProduct: 'Lodge Seasoned Cast Iron Skillet',
           category: 'Cookware',
-          score: 15,
-          improvement: 81,
+          score: 20,
+          improvement: 74,
           keyBenefits: [
+            'Extremely durable and long-lasting',
             'No chemical coatings',
-            'Durable and long-lasting',
-            'No leaching concerns',
-            'Easy to clean with proper technique'
+            'Excellent heat retention',
+            'Can last generations with proper care'
           ],
           verified: true,
-          priceRange: '$30-$150',
-          availability: 'Widely available'
+          priceRange: '$25-$120',
+          availability: 'Widely available',
+          imageUrl: 'https://images.unsplash.com/photo-1600172454420-38f5720c4990?w=800&h=600&fit=crop'
         },
-        reason: 'Stainless steel is chemically inert and doesn\'t require coatings. Most comprehensive safety profile for cookware.',
+        reason: 'Cast iron provides exceptional durability and safety. While it requires more maintenance, it offers superior longevity with no toxicological concerns.',
         dimensionComparison: [
-          { dimension: 'Carcinogenicity', currentScore: 85, recommendedScore: 12 },
+          { dimension: 'Carcinogenicity', currentScore: 85, recommendedScore: 18 },
           { dimension: 'Endocrine Disruption', currentScore: 72, recommendedScore: 15 },
-          { dimension: 'Reproductive Toxicity', currentScore: 68, recommendedScore: 18 }
+          { dimension: 'Reproductive Toxicity', currentScore: 68, recommendedScore: 20 }
         ]
       }
     ]
@@ -455,9 +499,12 @@ const PRODUCT_EVALUATIONS: Record<string, any> = {
     recommendations: [
       {
         id: 'r3',
+        preference: 'Lowest toxic risk',
+        preferenceDescription: 'If you prioritize safety over convenience for your baby',
         product: {
           id: 'alt3',
           name: 'Borosilicate Glass Baby Bottle',
+          specificProduct: 'Evenflo Classic Glass Bottle',
           category: 'Baby Products',
           score: 8,
           improvement: 90,
@@ -470,7 +517,8 @@ const PRODUCT_EVALUATIONS: Record<string, any> = {
           ],
           verified: true,
           priceRange: '$12-$25',
-          availability: 'Widely available'
+          availability: 'Widely available',
+          imageUrl: 'https://images.unsplash.com/photo-1589254065878-42c9da997008?w=800&h=600&fit=crop'
         },
         reason: 'Glass is the safest material for baby bottles. No chemical interactions, completely inert, and easy to clean thoroughly.',
         dimensionComparison: [
@@ -481,6 +529,208 @@ const PRODUCT_EVALUATIONS: Record<string, any> = {
     ]
   }
 };
+
+/**
+ * Convert AcademicStudy to extended citation format
+ */
+function formatStudyAsCitation(study: AcademicStudy) {
+  return {
+    id: study.id,
+    title: study.title,
+    authors: study.authors,
+    journal: study.journal,
+    year: study.year,
+    doi: study.doi,
+    pmid: study.pmid,
+    keyFindings: study.keyFindings,
+    relevanceScore: study.impactScore,
+    studyType: study.studyType,
+    chemicals: study.chemicals,
+    toxicologicalDimensions: study.toxicologicalDimensions,
+    impactScore: study.impactScore,
+    isSeminal: study.isSeminal,
+    methodologicalQuality: study.methodologicalQuality,
+    regulatoryImpact: study.regulatoryImpact
+  };
+}
+
+/**
+ * Enrich dimension citations from catalogue
+ */
+function enrichDimensionCitations(evaluation: any): any {
+  const enrichedDimensions = evaluation.dimensions?.map((dim: any) => {
+    // Get existing citations (may have manual ones)
+    const existingCitationIds = new Set(
+      dim.citations?.map((c: any) => c.id) || []
+    );
+
+    // Get studies specific to this dimension
+    const dimensionStudies = getStudiesByDimension(dim.dimension);
+    
+    // Also get studies for chemicals in this dimension
+    const chemicalStudies: AcademicStudy[] = [];
+    dim.chemicals?.forEach((chem: any) => {
+      const studies = getStudiesByChemical(chem.name);
+      chemicalStudies.push(...studies);
+    });
+
+    // Combine and filter to dimension-relevant studies
+    const allRelevantStudies = new Map<string, AcademicStudy>();
+    
+    // Add dimension-specific studies
+    dimensionStudies.forEach(study => {
+      if (!allRelevantStudies.has(study.id)) {
+        allRelevantStudies.set(study.id, study);
+      }
+    });
+
+    // Add chemical-specific studies that match this dimension
+    chemicalStudies.forEach(study => {
+      if (
+        study.toxicologicalDimensions?.includes(dim.dimension) &&
+        !allRelevantStudies.has(study.id)
+      ) {
+        allRelevantStudies.set(study.id, study);
+      }
+    });
+
+    // Merge with existing citations, prioritizing catalogue studies
+    const mergedCitations: any[] = [];
+    const usedIds = new Set<string>();
+
+    // First, add existing citations (keep manual ones)
+    if (dim.citations) {
+      dim.citations.forEach((citation: any) => {
+        // Try to find matching study in catalogue to enrich
+        const matchingStudy = Array.from(allRelevantStudies.values()).find(
+          s => s.id === citation.id || 
+               (s.doi === citation.doi && citation.doi) ||
+               (s.pmid === citation.pmid && citation.pmid)
+        );
+
+        if (matchingStudy) {
+          // Enrich with catalogue data
+          mergedCitations.push(formatStudyAsCitation(matchingStudy));
+          usedIds.add(matchingStudy.id);
+          allRelevantStudies.delete(matchingStudy.id);
+        } else {
+          // Keep original citation, but extend format
+          mergedCitations.push({
+            ...citation,
+            relevanceScore: citation.relevanceScore || 75,
+            impactScore: citation.relevanceScore || 75
+          });
+          if (citation.id) usedIds.add(citation.id);
+        }
+      });
+    }
+
+    // Add top catalogue studies for this dimension (not already included)
+    const newStudies = Array.from(allRelevantStudies.values())
+      .filter(study => !usedIds.has(study.id))
+      .sort((a, b) => b.impactScore - a.impactScore)
+      .slice(0, Math.max(0, 3 - mergedCitations.length)); // Up to 3 total
+
+    newStudies.forEach(study => {
+      mergedCitations.push(formatStudyAsCitation(study));
+      usedIds.add(study.id);
+    });
+
+    // Sort by relevance/impact
+    mergedCitations.sort((a, b) => (b.impactScore || b.relevanceScore) - (a.impactScore || a.relevanceScore));
+
+    return {
+      ...dim,
+      citations: mergedCitations
+    };
+  });
+
+  return {
+    ...evaluation,
+    dimensions: enrichedDimensions
+  };
+}
+
+/**
+ * Enrich product evaluation with relevant studies from the catalogue
+ */
+function enrichWithStudies(evaluation: any): any {
+  // First, enrich dimension citations
+  const evaluationWithDimensionCitations = enrichDimensionCitations(evaluation);
+
+  // Collect IDs of studies already shown in dimension citations
+  const dimensionCitationIds = new Set<string>();
+  evaluationWithDimensionCitations.dimensions?.forEach((dim: any) => {
+    dim.citations?.forEach((citation: any) => {
+      if (citation.id) dimensionCitationIds.add(citation.id);
+    });
+  });
+
+  // Collect all chemicals mentioned in the product
+  const allChemicals = new Set<string>();
+  evaluationWithDimensionCitations.dimensions?.forEach((dim: any) => {
+    dim.chemicals?.forEach((chem: any) => {
+      allChemicals.add(chem.name);
+    });
+  });
+
+  // Collect all dimensions
+  const allDimensions = evaluationWithDimensionCitations.dimensions?.map((d: any) => d.dimension) || [];
+
+  // Get studies by multiple criteria - use Map for deduplication by ID
+  const studyMap = new Map<string, AcademicStudy>();
+
+  // Get studies by each chemical
+  allChemicals.forEach(chemical => {
+    const studies = getStudiesByChemical(chemical);
+    studies.forEach(study => {
+      if (!studyMap.has(study.id)) {
+        studyMap.set(study.id, study);
+      }
+    });
+  });
+
+  // Get studies by product category
+  if (evaluation.category) {
+    const categoryStudies = getStudiesByProductCategory(evaluation.category);
+    categoryStudies.forEach(study => {
+      if (!studyMap.has(study.id)) {
+        studyMap.set(study.id, study);
+      }
+    });
+  }
+
+  // Get studies by each dimension
+  allDimensions.forEach((dimension: string) => {
+    const dimensionStudies = getStudiesByDimension(dimension);
+    dimensionStudies.forEach(study => {
+      if (!studyMap.has(study.id)) {
+        studyMap.set(study.id, study);
+      }
+    });
+  });
+
+  // Filter out studies already shown in dimensions, then convert to array and sort
+  const researchLibrary = Array.from(studyMap.values())
+    .filter(study => !dimensionCitationIds.has(study.id)) // Exclude already-shown studies
+    .sort((a, b) => b.impactScore - a.impactScore)
+    .slice(0, 20); // Limit to top 20 most relevant studies
+
+  // Convert AcademicStudy format to Citation format for compatibility
+  const formattedStudies = researchLibrary.map(formatStudyAsCitation);
+
+  return {
+    ...evaluationWithDimensionCitations,
+    researchLibrary: formattedStudies,
+    researchLibraryStats: {
+      totalStudies: formattedStudies.length,
+      seminalStudies: formattedStudies.filter((s: any) => s.isSeminal).length,
+      highImpactStudies: formattedStudies.filter((s: any) => s.impactScore >= 90).length,
+      chemicalsCovered: Array.from(allChemicals),
+      dimensionsCovered: allDimensions
+    }
+  };
+}
 
 export async function GET(
   request: NextRequest,
@@ -501,7 +751,10 @@ export async function GET(
       );
     }
     
-    return NextResponse.json(evaluation);
+    // Enrich with studies from catalogue
+    const enrichedEvaluation = enrichWithStudies(evaluation);
+    
+    return NextResponse.json(enrichedEvaluation);
   } catch (error) {
     console.error('Product evaluation error:', error);
     return NextResponse.json(

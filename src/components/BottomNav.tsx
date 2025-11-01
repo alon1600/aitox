@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const tabs = [
-  { href: "/", label: "Search", icon: "🔎" },
+  { href: "/", label: "Home", icon: "🏠" },
+  { href: "/upload", label: "Scan", icon: "📷" },
+  { href: "/home", label: "My Home", icon: "🏡" },
   { href: "/profile", label: "Profile", icon: "🧬" },
 ];
 
@@ -13,9 +15,9 @@ export function BottomNav() {
 
   return (
     <nav className="sticky bottom-0 left-0 right-0 mx-auto w-full max-w-md rounded-t-3xl bg-indigo-800/70 px-4 py-2 backdrop-blur-md shadow-[0_-6px_30px_rgba(0,0,0,0.35)] ring-1 ring-white/15 lg:hidden">
-      <ul className="grid grid-cols-2 gap-1">
+      <ul className="grid grid-cols-4 gap-1">
         {tabs.map((t) => {
-          const active = pathname === t.href;
+          const active = pathname === t.href || (t.href === "/" && pathname === "/");
           return (
             <li key={t.href} className="text-center">
               <Link

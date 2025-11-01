@@ -53,6 +53,30 @@ export default function UploadPage() {
       });
       localStorage.setItem("scanHistory", JSON.stringify(history.slice(0, 50)));
 
+      // Add detected products to "My Home" catalog
+      if (result.detectedProducts && result.detectedProducts.length > 0) {
+        const myHomeProducts = JSON.parse(localStorage.getItem("myHomeProducts") || "[]");
+        
+        // Add products with metadata (avoid duplicates by name)
+        const existingNames = new Set(myHomeProducts.map((p: any) => p.name));
+        
+        result.detectedProducts.forEach((product: any) => {
+          if (!existingNames.has(product.name)) {
+            myHomeProducts.push({
+              ...product,
+              addedAt: product.addedAt || result.timestamp || new Date().toISOString(),
+              sourceScanId: scanId,
+            });
+            existingNames.add(product.name);
+          }
+        });
+        
+        localStorage.setItem("myHomeProducts", JSON.stringify(myHomeProducts));
+        
+        // Dispatch custom event to notify home page (same tab)
+        window.dispatchEvent(new Event("myHomeProductsUpdated"));
+      }
+
       // Navigate to processing page
       router.push(`/upload/processing?scanId=${scanId}`);
     } catch (err) {

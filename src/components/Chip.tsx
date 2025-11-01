@@ -12,6 +12,11 @@ interface ChipProps {
 const POPULAR_QUERY_MAP: Record<string, string | null> = {
   "Teflon pans": "1", // Direct product ID
   "Baby bottles": "2", // Direct product ID
+  "Baby Bottles": "2", // Direct product ID
+  "Non-Toxic Pots & Pans": "1", // Direct product ID - Pots and Pans
+  "Best Shampoo for my hair": null, // No product yet
+  "Rugs best for my air quality": null, // No product yet
+  "Non-toxic hand soap": null, // No product yet
   "Shampoo": null, // No product yet, will search
   "Rugs": null, // No product yet, will search
   "Hand soap": null, // No product yet, will search
